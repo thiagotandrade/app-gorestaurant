@@ -96,6 +96,20 @@ const FoodDetails: React.FC = () => {
     loadFood();
   }, [routeParams]);
 
+  useEffect(() => {
+    async function loadIsFavorite(): Promise<void> {
+      const { id } = routeParams;
+
+      const response = await api.get<Food>(`favorites/${id}`);
+
+      if (response.data) {
+        setIsFavorite(true);
+      }
+    }
+
+    loadIsFavorite();
+  }, [routeParams]);
+
   function handleIncrementExtra(id: number): void {
     // Increment extra quantity
     const updatedExtras = extras.map(extra => {
@@ -130,19 +144,14 @@ const FoodDetails: React.FC = () => {
 
   function handleIncrementFood(): void {
     // Increment food quantity
-    setFoodQuantity(state => state + 1);
+    setFoodQuantity(foodQuantity + 1);
   }
 
   function handleDecrementFood(): void {
     // Decrement food quantity
-    if (foodQuantity > 1) {
-      setFoodQuantity(state => state - 1);
-    } else {
-      Alert.alert(
-        'Erro ao diminuir quantidade',
-        'Quantidade de pratos não pode ser menor que 1.',
-      );
-    }
+    if (foodQuantity === 1) return;
+
+    setFoodQuantity(foodQuantity - 1);
   }
 
   const toggleFavorite = useCallback(async () => {
