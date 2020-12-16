@@ -80,17 +80,17 @@ const FoodDetails: React.FC = () => {
 
       const foodDetail = response.data;
 
-      foodDetail.formattedPrice = formatValue(foodDetail.price);
-
-      setFood(foodDetail);
-
-      const foodExtras = foodDetail.extras;
-
-      foodExtras.forEach(foodExtra => {
-        foodExtra.quantity = 0;
+      setFood({
+        ...foodDetail,
+        formattedPrice: formatValue(foodDetail.price),
       });
 
-      setExtras(foodExtras);
+      setExtras(
+        foodDetail.extras.map(foodExtra => ({
+          ...foodExtra,
+          quantity: 0,
+        })),
+      );
     }
 
     loadFood();
