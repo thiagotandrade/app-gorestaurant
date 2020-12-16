@@ -62,21 +62,19 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     async function loadFoods(): Promise<void> {
       // Load Foods from API
-      let response: AxiosResponse<Food[]>;
-
-      if (selectedCategory) {
-        response = await api.get(`foods?category_like=${selectedCategory}`);
-      } else {
-        response = await api.get(`foods?name_like=${searchValue}`);
-      }
-
-      const apiFoods = response.data;
-
-      apiFoods.forEach(food => {
-        food.formattedPrice = formatValue(food.price);
+      const response = await api.get('foods', {
+        params: {
+          category_like: selectedCategory,
+          name_like: searchValue,
+        },
       });
 
-      setFoods(apiFoods);
+      setFoods(
+        response.data.map((food: Food) => ({
+          ...food,
+          formattedPrice: formatValue(food.price),
+        })),
+      );
     }
 
     loadFoods();
